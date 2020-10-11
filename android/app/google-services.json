@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1007202120570",
+    "firebase_url": "https://dar-es-salaam-74670.firebaseio.com",
+    "project_id": "dar-es-salaam-74670",
+    "storage_bucket": "dar-es-salaam-74670.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007202120570:android:310833b6742110d406dcc3",
+        "android_client_info": {
+          "package_name": "com.example.dar_es_salaam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007202120570-fc13scr513616rgnoh657r4bi5cpnk38.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dar_es_salaam",
+            "certificate_hash": "92b58d417070544c8c127952b3a58fe31c2463c2"
+          }
+        },
+        {
+          "client_id": "1007202120570-di0huh5pmk9tfeic83brm06bojqcdd45.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0VmLP25940eU4NxgKshemO8_NowLeIZc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007202120570-di0huh5pmk9tfeic83brm06bojqcdd45.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
