@@ -43,10 +43,10 @@
 29        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 29-->[androidx.core:core:1.1.0] C:\Users\othni\.gradle\caches\transforms-2\files-2.1\3aaf6e5219b7f981ec263df919098c6f\core-1.1.0\AndroidManifest.xml:24:18-86
 30        android:debuggable="true"
-31        android:icon="@mipmap/ic_launcher"
-31-->C:\Users\othni\FlutterProjects\dar_es_salaam\android\app\src\main\AndroidManifest.xml:11:9-43
-32        android:label="dar_es_salaam" >
-32-->C:\Users\othni\FlutterProjects\dar_es_salaam\android\app\src\main\AndroidManifest.xml:10:9-38
+31        android:icon="@mipmap/launcher_icon"
+31-->C:\Users\othni\FlutterProjects\dar_es_salaam\android\app\src\main\AndroidManifest.xml:11:9-45
+32        android:label="Book Point" >
+32-->C:\Users\othni\FlutterProjects\dar_es_salaam\android\app\src\main\AndroidManifest.xml:10:9-35
 33        <activity
 33-->C:\Users\othni\FlutterProjects\dar_es_salaam\android\app\src\main\AndroidManifest.xml:12:9-40:20
 34            android:name="com.example.dar_es_salaam.MainActivity"
