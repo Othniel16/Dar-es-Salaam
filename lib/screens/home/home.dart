@@ -18,7 +18,6 @@ class _HomeState extends State<Home> {
   var _imageHeight;
   var _recentlyAddedImageHeight;
 
-  // the list of books to be used for searching
   List<Book> allBooks = [];
   List<Book> fictionBooks = [];
   List<Book> nonfictionBooks = [];
@@ -29,7 +28,72 @@ class _HomeState extends State<Home> {
   Color _color =
       RandomColor().randomColor(colorBrightness: ColorBrightness.dark);
 
-// get books from database
+  @override
+  void didChangeDependencies() {
+    _imageHeight = MediaQuery.of(context).size.width / 1.9;
+    _recentlyAddedImageHeight = MediaQuery.of(context).size.width / 3.5;
+    super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getBooks();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    BookProvider bookProvider = Provider.of<BookProvider>(context);
+    bookProvider.setBooks(allBooks);
+    bookProvider.setFictionBooks(fictionBooks);
+    bookProvider.setNonFictionBooks(nonfictionBooks);
+    bookProvider.setChildrenBooks(childrenBooks);
+    bookProvider.setSchoolMaterial(schoolBooks);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: AnimatedOpacity(
+          opacity: showTitle ? 1.0 : 0.0,
+          duration: Duration(milliseconds: showTitle ? 100 : 00),
+          child: Text(
+            _title,
+            style: TextStyle(
+                fontFamily: fontFamily,
+                fontWeight: showTitle ? FontWeight.normal : FontWeight.bold),
+          ),
+        ),
+        actions: [
+          // search
+          IconButton(
+            color: Theme.of(context).iconTheme.color,
+            icon: Icon(
+              Icons.search,
+            ),
+            tooltip: 'Search',
+            onPressed: () => showSearchButton(context),
+          ),
+
+          // settings
+          IconButton(
+              tooltip: 'Settings and more',
+              color: Theme.of(context).iconTheme.color,
+              icon: Icon(SimpleLineIcons.settings),
+              onPressed: () {
+                Navigator.push(context,
+                    CupertinoPageRoute(builder: (context) => SettingsPage()));
+              })
+        ],
+      ),
+      body: allBooks.isNotEmpty
+          ? Container(
+              child: buildList(),
+            )
+          : buildEmptyView(context),
+      floatingActionButton: Fab(),
+    );
+  }
+
+  // get books from database
   void getBooks() async {
     List<QueryDocumentSnapshot> querySnapshots = await FirestoreService
         .booksCollection
@@ -69,20 +133,7 @@ class _HomeState extends State<Home> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    _imageHeight = MediaQuery.of(context).size.width / 1.9;
-    _recentlyAddedImageHeight = MediaQuery.of(context).size.width / 3.5;
-    super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getBooks();
-  }
-
-  Widget _buildList() {
+  Widget buildList() {
     return LiquidPullToRefresh(
       showChildOpacityTransition: false,
       animSpeedFactor: 4.0,
@@ -143,55 +194,62 @@ class _HomeState extends State<Home> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    BookProvider bookProvider = Provider.of<BookProvider>(context);
-    bookProvider.setBooks(allBooks);
-    bookProvider.setFictionBooks(fictionBooks);
-    bookProvider.setNonFictionBooks(nonfictionBooks);
-    bookProvider.setChildrenBooks(childrenBooks);
-    bookProvider.setSchoolMaterial(schoolBooks);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: AnimatedOpacity(
-          opacity: showTitle ? 1.0 : 0.0,
-          duration: Duration(milliseconds: showTitle ? 100 : 00),
-          child: Text(
-            _title,
-            style: TextStyle(
-                fontFamily: fontFamily,
-                fontWeight: showTitle ? FontWeight.normal : FontWeight.bold),
-          ),
-        ),
-        actions: [
-          // search
-          IconButton(
-            color: Theme.of(context).iconTheme.color,
-            icon: Icon(
-              Icons.search,
+  Widget buildEmptyView(BuildContext context) {
+    return LiquidPullToRefresh(
+      showChildOpacityTransition: false,
+      animSpeedFactor: 4.0,
+      color: _color,
+      backgroundColor: Colors.white,
+      height: 70.0,
+      onRefresh: refreshList,
+      child: Center(
+        child: ListView(
+          shrinkWrap: true,
+          physics:
+              BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height / 1.2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Have a book to donate?',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: fontFamily,
+                    ),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                        text: 'Tap',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Theme.of(context).textSelectionColor,
+                          fontFamily: fontFamily,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: '  +  ',
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .floatingActionButtonTheme
+                                    .backgroundColor,
+                                fontSize: 30),
+                          ),
+                          TextSpan(
+                              text: 'to get started',
+                              style: TextStyle(
+                                fontFamily: fontFamily,
+                              ))
+                        ]),
+                  ),
+                ],
+              ),
             ),
-            tooltip: 'Search',
-            onPressed: () => showSearchButton(context),
-          ),
-
-          // settings
-          IconButton(
-              tooltip: 'Settings and more',
-              color: Theme.of(context).iconTheme.color,
-              icon: Icon(SimpleLineIcons.settings),
-              onPressed: () {
-                Navigator.push(context,
-                    CupertinoPageRoute(builder: (context) => SettingsPage()));
-              })
-        ],
+          ],
+        ),
       ),
-      body: allBooks.isNotEmpty
-          ? Container(
-              child: _buildList(),
-            )
-          : Center(child: CupertinoActivityIndicator()),
-      floatingActionButton: Fab(),
     );
   }
 
@@ -397,7 +455,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  // build the last bit of the home screen
+  // build the last section of the home screen
   Container allCategoriesWidget(List<Book> books) {
     String tag = 'All Categories';
     return Container(
@@ -436,7 +494,8 @@ class _HomeState extends State<Home> {
           ListView.separated(
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),
-            itemCount: 7,
+            itemCount: books.length > 7 ? 7 : books.length,
+            padding: const EdgeInsets.only(bottom: 30.0),
             separatorBuilder: (context, index) => Divider(),
             itemBuilder: (context, index) {
               Book book = books[index];
@@ -474,7 +533,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  // call the search method to show the search screen
+  // show the search screen
   Future<Book> showSearchButton(BuildContext context) {
     return showSearch(
       context: context,
@@ -500,11 +559,37 @@ class _HomeState extends State<Home> {
         items: allBooks,
         searchLabel: 'Search',
         suggestion: Center(
-          child: Text('Suggestions appear here'),
+          child: Text(
+            'Suggestions appear here :)',
+            style: TextStyle(
+              fontSize: 20.0,
+              fontFamily: fontFamily,
+            ),
+          ),
         ),
         failure: Center(
-          child: Text('No book found :('),
-        ),
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'No matching books :(',
+              style: TextStyle(
+                fontSize: 20.0,
+                fontFamily: fontFamily,
+              ),
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            Text(
+              'Check your spelling or try another word',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontFamily: fontFamily,
+              ),
+            ),
+          ],
+        )),
         filter: (book) => [book.title, book.category],
         builder: (book) => GestureDetector(
           onTap: () {
