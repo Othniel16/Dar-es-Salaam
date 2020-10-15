@@ -377,8 +377,7 @@ class _AddBookState extends State<AddBook> {
                       Navigator.pop(context);
                       showSnackBar(
                           context: context,
-                          message:
-                              'Your book has been uploaded. Pull to refresh');
+                          message: 'Your book has been uploaded');
                     });
                   } else {
                     showSnackBar(
