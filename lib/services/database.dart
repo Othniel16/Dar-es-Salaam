@@ -168,36 +168,4 @@ class FirestoreService {
       return 'Saved to library';
     }
   }
-
-// -------------------- Other ---------------------------
-
-  // update book availabiltiy
-  Future toggleAvailability() async {
-    String available = 'isAvailable';
-    DocumentReference documentReference = booksCollection.doc(uid);
-    DocumentSnapshot doc = await documentReference.get();
-    bool isAvailable = doc.data()[available];
-    await documentReference
-        .update({available: !isAvailable}).then((value) => print('Done!'));
-  }
-
-  // make a book list from snapshot
-  // List<Book> _bookListFromSnapshot(QuerySnapshot snapshot) {
-  //   return snapshot.docs.map((doc) {
-  //     return Book(
-  //       title: doc.data()['title'] ?? '',
-  //       authors: doc.data()['authors' ?? []],
-  //       category: doc.data()['category'] ?? '',
-  //       isAvailable: doc.data()['isAvailable'] ?? true,
-  //       ownerID: doc.data()['ownerID'],
-  //       image: doc.data()['image'],
-  //     );
-  //   }).toList();
-  // }
-
-  // get books stream
-  // Stream<List<Book>> get books {
-  //   return booksCollection.snapshots().map(_bookListFromSnapshot);
-  // }
-
 }
