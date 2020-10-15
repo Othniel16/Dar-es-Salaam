@@ -16,6 +16,7 @@ class SeeAll extends StatelessWidget {
         ),
       ),
       body: StaggeredGridView.countBuilder(
+        addAutomaticKeepAlives: true,
         physics: BouncingScrollPhysics(),
         crossAxisCount: 4,
         itemCount: books.length,
