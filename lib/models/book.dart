@@ -47,17 +47,4 @@ class Book {
     };
     return map;
   }
-
-  static Book fromMap(Map<String, dynamic> map) {
-    return Book(
-      title: map['title'],
-      authors: map['authors'],
-      ownerID: map['ownerID'],
-      isAvailable: map['isAvailable'],
-      image: map['image'],
-      timeOfUpload: map['timeOfUpload'],
-      category: map['category'],
-      bookID: map['bookID'],
-    );
-  }
 }
