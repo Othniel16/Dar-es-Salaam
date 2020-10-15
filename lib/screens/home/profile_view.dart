@@ -1,3 +1,4 @@
+import 'package:dar_es_salaam/shared/progressDialog.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:dar_es_salaam/shared/barrier.dart';
@@ -256,23 +257,6 @@ class _ProfileViewState extends State<ProfileView> {
                                         bottomOffsetHeight:
                                             80.0, // Offset height to consider, for showing the menu item ( for example bottom navigation bar), so that the popup menu will be shown on top of selected item.
                                         menuItems: <FocusedMenuItem>[
-                                          // Add Each FocusedMenuItem  for Menu Options
-
-                                          FocusedMenuItem(
-                                              title: Text(
-                                                book.isAvailable
-                                                    ? 'Mark as unavailable'
-                                                    : 'Mark as available',
-                                              ),
-                                              trailingIcon: Icon(
-                                                Icons.check,
-                                              ),
-                                              onPressed: () {
-                                                FirestoreService(
-                                                        uid: book.bookID)
-                                                    .toggleAvailability();
-                                                setState(() {});
-                                              }),
                                           FocusedMenuItem(
                                               title: Text(
                                                 "Delete",
@@ -284,6 +268,7 @@ class _ProfileViewState extends State<ProfileView> {
                                                 color: Colors.redAccent,
                                               ),
                                               onPressed: () async {
+                                                showProgress(context);
                                                 try {
                                                   await FirestoreService(
                                                           uid: signedInUser.id)
@@ -295,12 +280,12 @@ class _ProfileViewState extends State<ProfileView> {
                                                   await FirestoreService()
                                                       .deleteImage(
                                                           book.image['name'])
-                                                      .then((value) =>
-                                                          showSnackBar(
-                                                              message:
-                                                                  'Book deleted',
-                                                              context:
-                                                                  context));
+                                                      .then((value) {
+                                                    dismissProgressDialog();
+                                                    showSnackBar(
+                                                        message: 'Book deleted',
+                                                        context: context);
+                                                  });
                                                 } catch (error) {
                                                   print('An error occurred');
                                                 }
