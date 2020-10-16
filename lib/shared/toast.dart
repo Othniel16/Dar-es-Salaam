@@ -1,19 +1,30 @@
+import 'package:dar_es_salaam/shared/barrier.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 showSnackBar({@required String message, @required BuildContext context}) {
-  showToast(
-    message,
-    context: context,
-    animation: StyledToastAnimation.slideFromBottom,
-    reverseAnimation: StyledToastAnimation.slideToBottom,
-    fullWidth: true,
-    startOffset: Offset(0.0, 3.0),
-    reverseEndOffset: Offset(0.0, 3.0),
-    position: StyledToastPosition.bottom,
-    duration: Duration(seconds: 4),
-    animDuration: Duration(seconds: 1),
-    curve: Curves.elasticOut,
-    reverseCurve: Curves.fastOutSlowIn,
-  );
+  return Flushbar(
+    flushbarStyle: FlushbarStyle.FLOATING,
+    margin: EdgeInsets.all(8.0),
+    duration: Duration(seconds: 5),
+    borderRadius: 5.0,
+    reverseAnimationCurve: Curves.linear,
+    forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
+    mainButton: FlatButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      child: Text(
+        'OK',
+        style: TextStyle(color: Colors.amber, fontFamily: fontFamily),
+      ),
+    ),
+    messageText: Text(
+      message,
+      style: TextStyle(
+        fontSize: 17.0,
+        color: Colors.white,
+      ),
+    ),
+  )..show(context);
 }
