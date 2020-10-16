@@ -275,7 +275,7 @@ class _HomeState extends State<Home> {
   Widget blockBuilder(String category, List<Book> books) {
     return Container(
       margin: books.isNotEmpty
-          ? EdgeInsets.symmetric(vertical: 10.0)
+          ? const EdgeInsets.symmetric(vertical: 10.0)
           : EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,7 +283,7 @@ class _HomeState extends State<Home> {
           // category and see all button. See all button only shows when there are
           // more than 4 items in that category
           Container(
-            margin: EdgeInsets.only(left: 15.0, right: 10.0, bottom: 15.0),
+            margin: EdgeInsets.only(left: 15.0, bottom: 15.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -319,136 +319,102 @@ class _HomeState extends State<Home> {
             ),
           ),
 
-          // images in the horizontal scroll view is shown only when there is
-          // something to show. When there is no book, we show a container that
-          // when tapped allows the user to add a new book. It has the same height
-          // and width as the book images has
-          if (books.length < 1)
-            category != 'Fresh'
-                ? GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          CupertinoPageRoute(builder: (context) => AddBook()));
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(
-                          left: 15.0, right: 10.0, bottom: 15.0),
-                      height: MediaQuery.of(context).size.width / 1.9,
-                      width: MediaQuery.of(context).size.width / 1.9,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              CupertinoIcons.add,
-                              size: 40.0,
-                            ),
-                            Text('Add')
-                          ],
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                    ),
-                  )
-                : SizedBox.shrink()
-          else
-            Container(
-              height: category == newArrivals
-                  ? MediaQuery.of(context).size.width / 2.2
-                  : MediaQuery.of(context).size.width / 1.5,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                physics: BouncingScrollPhysics(),
-                itemCount: books.length,
-                itemBuilder: (context, index) {
-                  Book book = books[index];
+          // images
+          Container(
+            height: category == newArrivals
+                ? MediaQuery.of(context).size.width / 2.2
+                : MediaQuery.of(context).size.width / 1.5,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              physics: BouncingScrollPhysics(),
+              padding: const EdgeInsets.only(right: 15.0),
+              itemCount: books.length > 7 ? 7 : books.length,
+              itemBuilder: (context, index) {
+                Book book = books[index];
 
-                  // get the number of days since book was uploaded
-                  // if it is 2 days, we don't show the new tag
-                  Duration _dateDifference = DateTime.now().difference(
-                      DateTime.parse(book.timeOfUpload.toDate().toString()));
-                  int _daysAgo = _dateDifference.inDays;
+                // get the number of days since book was uploaded
+                // if it is 2 days, we don't show the new tag
+                Duration _dateDifference = DateTime.now().difference(
+                    DateTime.parse(book.timeOfUpload.toDate().toString()));
+                int _daysAgo = _dateDifference.inDays;
 
-                  return OpenContainer(
-                    closedElevation: 0.0,
-                    closedColor: Theme.of(context).scaffoldBackgroundColor,
-                    openBuilder: (context, action) => BookDetail(
-                      book: book,
-                    ),
-                    closedBuilder: (context, action) => Padding(
-                      padding: index == 0
-                          ? EdgeInsets.only(left: 15.0)
-                          : EdgeInsets.only(left: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // image
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Stack(
-                              children: [
-                                // actual image
-                                CachedNetworkImage(
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.9,
-                                  height: category != newArrivals
-                                      ? _imageHeight
-                                      : _recentlyAddedImageHeight,
-                                  fit: BoxFit.cover,
-                                  imageUrl: book.image['url'],
-                                  placeholder: (context, url) => Container(
-                                    color: Colors.grey[300],
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(
-                                    Icons.error,
-                                    size: 40.0,
-                                  ),
+                return OpenContainer(
+                  closedElevation: 0.0,
+                  closedColor: Theme.of(context).scaffoldBackgroundColor,
+                  openBuilder: (context, action) => BookDetail(
+                    book: book,
+                  ),
+                  closedBuilder: (context, action) => Padding(
+                    padding: index == 0
+                        ? const EdgeInsets.only(left: 15.0)
+                        : const EdgeInsets.only(left: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // image
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Stack(
+                            children: [
+                              // actual image
+                              CachedNetworkImage(
+                                width: MediaQuery.of(context).size.width / 1.9,
+                                height: category != newArrivals
+                                    ? _imageHeight
+                                    : _recentlyAddedImageHeight,
+                                fit: BoxFit.cover,
+                                imageUrl: book.image['url'],
+                                placeholder: (context, url) => Container(
+                                  color: Colors.grey[300],
                                 ),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(
+                                  Icons.error,
+                                  size: 40.0,
+                                ),
+                              ),
 
-                                // new tag
-                                category != newArrivals
-                                    ? Positioned(
-                                        child: _daysAgo < 2
-                                            ? newTag()
-                                            : SizedBox.shrink(),
-                                        right: 10.0,
-                                        bottom: 10.0,
-                                      )
-                                    : Container()
-                              ],
-                            ),
+                              // new tag
+                              category != newArrivals
+                                  ? Positioned(
+                                      child: _daysAgo < 2
+                                          ? newTag()
+                                          : SizedBox.shrink(),
+                                      right: 10.0,
+                                      bottom: 10.0,
+                                    )
+                                  : Container()
+                            ],
                           ),
+                        ),
 
-                          // book title and first author
-                          Flexible(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 1.9,
-                              child: ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(
-                                  book.title,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: 17.0),
-                                ),
-                                subtitle: Text(
-                                  book.authors[0],
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: 16.0),
-                                ),
+                        // book title and first author
+                        Flexible(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 1.9,
+                            child: ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(
+                                book.title,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 17.0),
+                              ),
+                              subtitle: Text(
+                                book.authors[0],
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 16.0),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
+          ),
+
           books.isNotEmpty ? Divider() : SizedBox.shrink()
         ],
       ),
