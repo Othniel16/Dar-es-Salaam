@@ -1,3 +1,4 @@
+import 'package:dar_es_salaam/shared/progressDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:dar_es_salaam/shared/barrier.dart';
 
@@ -129,7 +130,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                   ? 'Description cannot be empty'
                                   : null,
                               onChanged: (value) {
-                                setState(() => description = value);
+                                setState(() => description = value.trim());
                               },
                             ),
                           ],
@@ -212,6 +213,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                           ),
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
+                              showProgress(context);
                               await FirebaseFirestore.instance
                                   .collection('users')
                                   .doc(user.id)
@@ -221,8 +223,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                     description ?? userData.description,
                                 'phone': phone ?? userData.phone,
                                 'location': location ?? userData.location,
-                              });
-                              Navigator.pop(context);
+                              }).then((value) => dismissProgressDialog());
                               showSnackBar(
                                   context: context, message: 'Profile updated');
                             }
