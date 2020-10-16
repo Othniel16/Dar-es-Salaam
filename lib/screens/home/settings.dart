@@ -127,15 +127,38 @@ class _SettingsPageState extends State<SettingsPage> {
 
           // sign out
           ListTile(
-            title: Text('Sign out'),
-            leading: CircleAvatar(
-              backgroundColor: Colors.orange[400],
-              child: const Icon(FontAwesome.sign_out, color: Colors.white),
-            ),
-            onTap: () async => await SettingsPage._authService
-                .signOut()
-                .then((value) => Navigator.pop(context)),
-          ),
+              title: Text('Sign out'),
+              leading: CircleAvatar(
+                backgroundColor: Colors.orange[400],
+                child: const Icon(FontAwesome.sign_out, color: Colors.white),
+              ),
+              onTap: () {
+                showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text('Confirm sign out'),
+                        actions: [
+                          CupertinoDialogAction(
+                            child: Text('Confirm'),
+                            isDestructiveAction: true,
+                            onPressed: () async {
+                              await SettingsPage._authService
+                                  .signOut()
+                                  .then((value) => Navigator.pop(context));
+                            },
+                          ),
+                          CupertinoDialogAction(
+                            child: Text('Cancel'),
+                            isDefaultAction: true,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          )
+                        ],
+                      );
+                    });
+              }),
           divider,
 
 //           // use this button if ever you have to perform some changes for all users. Like
